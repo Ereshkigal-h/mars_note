@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mars.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="com.mars.pojo.User">
+        <id property="userId" column="user_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="passwordHash" column="passwd_hash"/>
+        <result property="availableAitype" column="available_ai_type"/>
+    </resultMap>
+
+    <insert id="insertUser" parameterType="com.mars.pojo.User"
+            useGeneratedKeys="true" keyProperty="userId">
+        insert into users(user_name, passwd_hash, available_aitype)
+        values (#{userName}, #{passwordHash}, #{availableAitype})
+    </insert>
+
+    <update id="update" parameterType="com.mars.pojo.User">
+        update users
+        set passwd_hash=#{password}, available_aitype=#{availableAiType}
+        where user_id = #{ID}
+    </update>
+
+    <select id="selectUserId" resultMap="UserResultMap">
+        select user_name,passwd_hash,available_aitype from users
+        where user_id=#{ID}
+    </select>
+
+    <select id="selectUserName" resultMap="UserResultMap">
+        select user_id,passwd_hash,available_aitype
+        from users
+        where user_name = #{name}
+    </select>
+    <select id="selectPasswd" resultType="java.lang.String" parameterType="com.mars.pojo.User">
+        select passwd_hash
+        from users
+        where user_id =#{ID}
+    </select>
+
+
+
+</mapper>
