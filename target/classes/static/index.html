@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主界面</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="menu-bar">
+            <div class="menu-item">文件</div>
+            <div class="menu-item">视图</div>
+            <div class="menu-item">主题</div>
+            <div class="menu-item">帮助</div>
+            <div class="ai" id="ai-button">AI助手</div>
+            <div class="login" id="loginButton">登录</div>
+            <div class="edit">编辑</div>
+        </div>
+
+        <div class="tab-bar">
+            <div class="tab">纲<br>大</div>
+        </div>
+
+        <div class="sidebar">
+            <div class="sidebar-editor" contenteditable="true">
+                <!-- 侧边栏可编辑区域 -->
+                <p>侧边栏编辑内容...</p>
+            </div>
+        </div>
+
+        <div class="editor-wrapper">
+            <div class="editor-container">
+                <div class="editor-area" contenteditable="true">
+                    <!-- 可编辑区域 -->
+                    <p>在这里输入你的内容...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ai 侧边栏-->
+        <div class="ai-sidebar">
+            <div class="ai-header">
+                <h3><i class="fas fa-magic"></i> AI写作助手</h3>
+            </div>
+
+            <div class="ai-conversation">
+                <div class="ai-message ai-response">
+                    <div class="avatar"><i class="fas fa-robot"></i></div>
+                    <div class="message-content">你好！我是AI写作助手，有什么可以帮助您的？</div>
+                </div>
+            </div>
+
+            <div class="ai-input-area">
+                <input type="text" placeholder="输入您的问题或指令...">
+                <button class="send-btn"><i class="fas fa-paper-plane"></i> </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
