@@ -7,10 +7,7 @@ import com.mars.pojo.User;
 import com.mars.service.SessionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /*
 由于测试调用Session
@@ -23,13 +20,13 @@ public class SessionController {
     private SessionService sessionService;
 
     @GetMapping
-    public Result sessionIdGet(Session session) {
+    public Result sessionIdGet(@RequestBody Session session) {
         log.info("获取sessionId");
         sessionService.getSessionId(session);
         return Result.success(session);
     }
     @PostMapping
-    public Result setSessionUser(User user) {
+    public Result setSessionUser(@RequestBody User user) {
         log.info("在一个session中添加user");
         sessionService.setSessionUser(user);
         return Result.success();
