@@ -10,7 +10,11 @@ public interface NoteService {
      * @return 创建后的笔记（含ID和时间戳）
      */
     Note createNote(Note note);
-
+    /**
+     *修改笔记
+     * @return 修改后的笔记（含ID和时间戳）
+    */
+    Note updateNote(Note note);
 
     //请继续完成功能
 }
