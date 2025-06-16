@@ -11,6 +11,6 @@ public class User {
     public long userId;
     private String userName;
     private String passwordHash;
-    private String availableAitype = "";
+    private String availableAitype;
 
 }
