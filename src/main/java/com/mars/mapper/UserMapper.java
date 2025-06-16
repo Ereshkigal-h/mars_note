@@ -11,4 +11,5 @@ public interface UserMapper {
     User selectUserId(long id);
     User selectUserName(String name);
     String selectPasswd(long id);
+
 }
