@@ -5,6 +5,55 @@ document.addEventListener('DOMContentLoaded', function() {
     const sidebar = document.querySelector('.sidebar');
     const menuItems = document.querySelectorAll('.menu-item');
     const editorWrapper = document.querySelector('.editor-wrapper');
+    const token = localStorage.getItem('token');
+    const loginButton = document.getElementById('loginButton');
+
+    console.log('读取 Token:', token); // 确保没有多余字符
+
+    if (!token) {
+        window.location.href = '../logpage/login.html';
+        return;
+    }
+
+    fetch('/verify/token', {
+        method: 'POST',
+        headers: {
+            'Authorization': token
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.valid) {
+                console.log('欢迎用户:', data.username);
+
+                // 隐藏登录按钮，显示登出按钮
+                if (loginButton) {
+                    loginButton.style.display = 'none';
+                }
+
+                let logoutButton = document.getElementById('logoutButton');
+                if (!logoutButton) {
+                    logoutButton = document.createElement('button');
+                    logoutButton.id = 'logoutButton';
+                    logoutButton.textContent = '登出';
+                    logoutButton.style.marginLeft = '10px';
+                    logoutButton.addEventListener('click', function () {
+                        localStorage.removeItem('token');
+                        window.location.href = '../logpage/login.html';
+                    });
+
+                    // 假设将登出按钮插入到 AI 按钮旁边
+                    if (aiButton) {
+                        aiButton.parentNode.appendChild(logoutButton);
+                    }
+                }
+
+            } else {
+                localStorage.removeItem('token');
+                window.location.href = '../logpage/login.html';
+            }
+        });
+
 
     // AI按钮点击事件
     aiButton.addEventListener('click', function() {

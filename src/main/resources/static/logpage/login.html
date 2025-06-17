@@ -110,6 +110,7 @@
     }
 
     // 登录按钮点击事件
+    // 登录按钮点击事件
     if (loginButton) {
         loginButton.addEventListener('click', async function() {
             // 获取输入的用户名和密码
@@ -143,7 +144,10 @@
 
                 // 根据返回结果处理
                 if (result.code === 1) { // 成功
-                    window.location.href = '../index.html'; // 跳转到主页
+                    // 保存Token到localStorage
+                    localStorage.setItem('token', result.data);
+                    // 跳转到主页
+                    window.location.href = '../index.html';
                 } else { // 失败
                     alert(result.msg || '登录失败，用户名或密码错误');
                 }

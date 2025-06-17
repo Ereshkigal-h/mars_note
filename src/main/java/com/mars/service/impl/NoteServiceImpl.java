@@ -44,7 +44,7 @@ public class NoteServiceImpl implements NoteService {
         }
 
         note.setNoteAddress("./notes/" + fileName);
-        noteMapper.insertNoteAds(note.getNoteId(),note.getNoteAddress());//Long 和String 的问题
+//        noteMapper.insertNoteAds(note.getNoteId(),note.getNoteAddress());//Long 和String 的问题
         return note;
     }
 
