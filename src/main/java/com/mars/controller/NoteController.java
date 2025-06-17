@@ -25,4 +25,9 @@ public class NoteController {
         return new ResponseEntity<>(createdNote, HttpStatus.CREATED);
 
     }
+
+    public  ResponseEntity<Note> updateNote(Note note){
+        Note updatedNote = noteService.updateNote(note);
+        return new ResponseEntity<>(updatedNote, HttpStatus.OK);
+    }
 }
