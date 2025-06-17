@@ -2,13 +2,13 @@ package com.mars.service.impl;
 
 import com.mars.mapper.NoteMapper;
 import com.mars.pojo.Note;
+import com.mars.pojo.User;
 import com.mars.service.NoteService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionSystemException;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,74 +18,58 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class NoteServiceImpl implements NoteService {
-    @Autowired
-    private NoteMapper noteMapper;
+    private final NoteMapper noteMapper;
 
     @Override
-    public Note createNote(Note note){
+    @Transactional
+    public Note createNote(Note note, User user) {
+        // 1. 初始化笔记属性
         note.setCreatedAt(LocalDateTime.now());
         note.setUpdatedAt(LocalDateTime.now());
-        noteMapper.insertNoteId(note);
+        note.setUserId(user.getUserId());
 
-        String basePath = System.getProperty("user.dir");
-        String subFolderPath = basePath + File.separator + "notes";
+        // 2. 首次插入数据库获取noteId（此时noteAddress为空）
+        noteMapper.insertNoteAddress(note); // 执行后note.getNoteId()将被填充
 
-        // 确保子文件夹存在
-        ensureFolderExists(subFolderPath);
-
-        // 保存笔记到文件
+        // 3. 构建文件路径
         String fileName = "note_" + note.getNoteId() + ".txt";
-        try (FileWriter writer = new FileWriter(subFolderPath + File.separator + fileName)) {
-            writer.write(note.getContent());
+        String relativePath = "./notes/" + fileName; // 存储相对路径
+        Path filePath = Paths.get("notes", fileName); // 实际文件路径
+
+        try {
+            // 4. 确保目录存在
+            Files.createDirectories(filePath.getParent());
+            // 5. 创建文件并写入内容
+            Files.writeString(filePath, note.getContent());
+
+            // 6. 更新数据库中的文件路径
+            note.setNoteAddress(relativePath);
+            noteMapper.updateNoteAds(note); // 更新note_id表
         } catch (IOException e) {
-            throw new RuntimeException("笔记保存失败", e);
+            throw new TransactionSystemException("文件创建失败: " + e.getMessage());
         }
 
-        note.setNoteAddress("./notes/" + fileName);
-//        noteMapper.insertNoteAds(note.getNoteId(),note.getNoteAddress());//Long 和String 的问题
+        // 7. 关联用户和笔记
+        noteMapper.insertCombineIdNoteUser(note);
         return note;
     }
 
     @Override
-    public Note updateNote(Note note) {
+    @Transactional
+    public Note updateNote(Note note, User user) {
+        // 1. 更新数据库记录
         note.setUpdatedAt(LocalDateTime.now());
+        noteMapper.updateNoteAds(note); // 更新note_id表的地址（如果地址变化）
 
-        String baseDir = System.getProperty("user.dir");
-        String fileName = "note_" + note.getNoteId() + ".txt";
-        Path filePath = Paths.get(baseDir, "notes", fileName); // [2](@ref)
+        // 2. 获取实际文件路径（根据noteId构造）
+        Path filePath = Paths.get("notes", "note_" + note.getNoteId() + ".txt");
 
         try {
-            // 3. 检查文件是否存在
-            if (!Files.exists(filePath)) {
-                // 文件丢失时创建新文件（或根据业务需求抛异常）
-                Files.createDirectories(filePath.getParent());
-                Files.createFile(filePath);
-            }
-
-            // 4. 覆盖写入新内容（UTF-8编码）
-            Files.writeString(filePath, note.getContent()); // Java 11+ [2](@ref)
-
+            // 3. 覆盖写入内容
+            Files.writeString(filePath, note.getContent());
         } catch (IOException e) {
-            // 5. 异常处理（抛出自定义异常）
-            String errorMsg = "笔记文件更新失败: " + e.getMessage();
+            throw new TransactionSystemException("文件更新失败: " + e.getMessage());
         }
-
         return note;
-    }
-
-    public static void ensureFolderExists(String folderPath) {
-        File folder = new File(folderPath);
-        // 判断文件夹是否存在
-        if (!folder.exists()) {
-            // 创建文件夹（包括所有不存在的父目录）
-            boolean success = folder.mkdirs();
-            if (success) {
-                System.out.println("文件夹创建成功: " + folderPath);
-            } else {
-                System.err.println("文件夹创建失败: " + folderPath);
-            }
-        } else {
-            System.out.println("文件夹已存在: " + folderPath);
-        }
     }
 }
