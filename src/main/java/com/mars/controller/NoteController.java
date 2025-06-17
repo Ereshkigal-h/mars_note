@@ -1,6 +1,7 @@
 package com.mars.controller;
 
 import com.mars.pojo.Note;
+import com.mars.pojo.User;
 import com.mars.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,14 @@ public class NoteController {
     private final NoteService noteService;
 
     @PostMapping //
-    public ResponseEntity<Note> createNote(@RequestBody Note note) {
-        Note createdNote = noteService.createNote(note);
+    public ResponseEntity<Note> createNote(@RequestBody Note note , User  user) {
+        Note createdNote = noteService.createNote(note,user);
         return new ResponseEntity<>(createdNote, HttpStatus.CREATED);
 
     }
 
-    public  ResponseEntity<Note> updateNote(Note note){
-        Note updatedNote = noteService.updateNote(note);
+    public  ResponseEntity<Note> updateNote(Note note,User  user) {
+        Note updatedNote = noteService.updateNote(note,user);
         return new ResponseEntity<>(updatedNote, HttpStatus.OK);
     }
 }
