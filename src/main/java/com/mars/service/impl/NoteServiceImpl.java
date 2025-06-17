@@ -6,12 +6,10 @@ import com.mars.service.NoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,7 +42,7 @@ public class NoteServiceImpl implements NoteService {
         }
 
         note.setNoteAddress("./notes/" + fileName);
-        noteMapper.insertNoteAds(note.getNoteId(),note.getNoteAddress());//Long 和String 的问题
+//        noteMapper.insertNoteAds(note.getNoteId(),note.getNoteAddress());//Long 和String 的问题
         return note;
     }
 

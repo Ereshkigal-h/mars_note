@@ -57,7 +57,7 @@ body {
     background: linear-gradient(135deg, #0069d9, #007bff);
     color: white;
     padding: 8px 15px;
-    margin-left: auto;
+    margin-left: 1300px;
     border: none;
     border-radius: 4px;
     cursor: pointer;
