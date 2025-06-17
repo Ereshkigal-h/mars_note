@@ -38,8 +38,11 @@
         from users
         where user_name =#{name}
     </select>
-
-
+    <select id="selectNoteId" resultType="java.lang.Long">
+        select note_id
+        from combineid_note_user
+        where user_id = #{userId}
+    </select>
 
 
 </mapper>

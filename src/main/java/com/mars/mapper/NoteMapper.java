@@ -11,18 +11,13 @@ import java.util.List;
 
 @Mapper
 public interface NoteMapper {
-//  输入用户id返回一个NoteId的字符串，不同id使用逗号分割,会直接返回到note对象里面
-    void selectNoteId(Note note);
-//  输入用户id返回一个NoteId的字符串，不同id使用逗号分割,返回一个字符串地址
-    String selectNoteAddress(String NoteId);
-//  第一次创建NoteId 会自动调用note对象
-    void insertNoteId(Note note);
-//  更新NoteId，会自动调用note对象
-    void updateNoteId(Note note);
+//  查询对应的地址
+    void selectNoteAddress(Note note);
 //  需要输入NoteId和noteAddress,适用于第一次创建
-    void insertNoteAds(String NoteId,String noteAddress);
-//  需要输入NoteId和noteAddress,适用于更新已有的值
-    void updateNoteAds(String NoteId,String noteAddress);
-
+    void insertNoteAddress(Note note);
+//  和上一个方法必须同时执行并且在同一个事务中，创建关联表辅助user查询对应的noteid
+    void insertCombineIdNoteUser(Note note);
+//  更新noteId对应的地址
+    void updateNoteAds(Note note);
 }
 

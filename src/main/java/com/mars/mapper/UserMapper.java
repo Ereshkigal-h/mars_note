@@ -1,7 +1,10 @@
 package com.mars.mapper;
 
+import com.mars.pojo.Note;
 import com.mars.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -15,4 +18,6 @@ public interface UserMapper {
     User selectUserByName(String name);
 //  查询使用账户名查询密码，返回加密的密码字符串
     String selectPasswd(String name);
+//  查询对应的用户的noteID
+    List<Long> selectNoteId(long userId);
 }

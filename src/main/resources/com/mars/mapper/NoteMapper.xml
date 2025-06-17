@@ -2,34 +2,24 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mars.mapper.NoteMapper">
-    <insert id="insertNoteId" parameterType="com.mars.pojo.Note">
-        insert into note_user(user_id,note_id)
-        values (#{userId},#{noteId})
+    <insert id="insertNoteAddress" parameterType="com.mars.pojo.Note"
+            useGeneratedKeys="true" keyProperty="noteId">
+        insert into note_id_address(note_address)
+        values (#{noteAddress})
     </insert>
+    <insert id="insertCombineIdNoteUser" parameterType="com.mars.pojo.Note">
+        insert into combineid_note_user(note_id, user_id)
+        values (#{noteId}, #{userId})
 
-    <insert id="insertNoteAds" parameterType="java.lang.String">
-        insert into note_id(note_id,note_address)
-        values (#{noteId},#{noteAddress})
     </insert>
-    <update id="updateNoteId" parameterType="com.mars.pojo.Note">
-        update note_user
-        set note_id=#{noteId}
-        where user_id=#{userId}
-    </update>
-    <update id="updateNoteAds">
+    <update id="updateNoteAds" parameterType="com.mars.pojo.Note">
         update note_id
         set note_address=#{noteAddress}
         where note_id=#{noteId}
     </update>
-    <select id="selectNoteId" resultType="com.mars.pojo.Note">
-        select  note_id
-        from user_id
-        where user_id = #{userId}
-    </select>
-    <select id="selectNoteAddress" resultType="java.lang.String">
+    <select id="selectNoteAddress" parameterType="com.mars.pojo.Note">
         select note_address
-        from note_id
+        from note_id_address
         where note_id = #{noteId}
     </select>
-
 </mapper>
