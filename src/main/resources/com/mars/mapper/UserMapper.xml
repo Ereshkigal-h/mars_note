@@ -19,27 +19,30 @@
 
     <update id="update" parameterType="com.mars.pojo.User">
         update users
-        set passwd_hash=#{password}, available_aitype=#{availableAiType}
-        where user_id = #{ID}
+        set passwd_hash=#{passwordHash}, available_aitype=#{availableAiType}
+        where user_id = #{userId}
     </update>
 
-    <select id="selectUserId" resultMap="UserResultMap">
+    <select id="selectUserById" resultMap="UserResultMap">
         select user_name,passwd_hash,available_aitype from users
-        where user_id=#{ID}
+        where user_id=#{userId}
     </select>
 
-    <select id="selectUserName" resultMap="UserResultMap">
+    <select id="selectUserByName" resultMap="UserResultMap">
         select user_id,passwd_hash,available_aitype
         from users
         where user_name = #{name}
     </select>
-    <select id="selectPasswd" resultType="java.lang.String" parameterType="com.mars.pojo.User">
+    <select id="selectPasswd" resultType="java.lang.String" parameterType="java.lang.String">
         select passwd_hash
         from users
-        where user_id =#{ID}
+        where user_name =#{name}
     </select>
-
-
+    <select id="selectNoteId" resultType="java.lang.Long">
+        select note_id
+        from combineid_note_user
+        where user_id = #{userId}
+    </select>
 
 
 </mapper>
