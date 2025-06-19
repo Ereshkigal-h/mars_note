@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 
 public class Note {
     private Long noteId;// 笔记ID（主键）
-    private String title;        // 笔记标题
     private String content;      // 笔记内容
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
