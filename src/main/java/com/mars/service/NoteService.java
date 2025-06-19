@@ -15,7 +15,8 @@ public interface NoteService {
      *修改笔记
      * @return 修改后的笔记（含ID和时间戳）
     */
-    Note updateNote(Note note,User user);
+    Note saveAndUpdateNote(Note note,User user);
+
 
     //请继续完成功能
 }
