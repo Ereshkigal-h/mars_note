@@ -4,6 +4,9 @@ import com.mars.pojo.User;
 import com.mars.pojo.AI;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import com.mars.service.AiService;
+import org.springframework.stereotype.Service;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -11,9 +14,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
-public class AiServicelmpl {
-    String GetAiMessage(User user,String message,AI ai,String temperature) throws Exception {
+@Service
+public class AiServicelmpl implements AiService {
+    @Override
+    public String GetAiMessage(User user, String message, AI ai, String temperature) throws Exception {
         long userId = user.userId;
         String url = ai.getUrl();
         JSONObject jsonObject = new JSONObject();
