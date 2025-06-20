@@ -11,11 +11,10 @@
         <module name="Mars_note" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="17" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Mars_note" options="-parameters" />
       <module name="mars-note" options="-parameters" />
     </option>
   </component>

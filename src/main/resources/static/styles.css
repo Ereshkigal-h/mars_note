@@ -410,3 +410,27 @@ body {
         font-size: 14px;
     }
 }
+
+
+.ai-message {
+    display: flex;
+    margin: 10px 0;
+    align-items: start;
+}
+
+.avatar {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.message-content {
+    background-color: #f0f0f0;
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 70%;
+}
+
+.user-message .message-content {
+    background-color: #d1e7dd;
+    margin-left: auto;
+}

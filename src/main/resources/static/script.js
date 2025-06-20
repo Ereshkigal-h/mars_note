@@ -9,6 +9,73 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginButton = document.getElementById('loginButton');
     const saveButton = document.querySelector('.menu-item');// 获取保存按钮元素
 
+
+
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ai发送按钮功能不一定能实现
+    const aiSend = document.getElementById('ai-send'); // 获取AI交互按钮
+    const aiInput = document.getElementById('ai-input'); // 输入框
+    const aiConversation = document.querySelector('.ai-conversation'); // 聊天容器
+    const editorArea = document.querySelector('.editor-area');
+
+    if (aiSend) {
+        aiSend.addEventListener('click', async function () {
+            const userMessage = aiInput.value.trim(); // 使用 value 而不是 innerHTML
+            if (!userMessage) return;
+
+            // 显示用户消息
+            const userMsgDiv = document.createElement('div');
+            userMsgDiv.className = 'ai-message user-message';
+            userMsgDiv.innerHTML = `
+                <div class="avatar">👤</div>
+                <div class="message-content">${userMessage}</div>
+            `;
+            aiConversation.appendChild(userMsgDiv);
+
+            // 清空输入框
+            aiInput.value = '';
+
+            try {
+                const response = await fetch('/Ai', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': localStorage.getItem('token')
+                    },
+                    body: JSON.stringify({
+                        message: userMessage,
+                        userId: '当前用户ID'
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // 显示AI回复
+                    const aiMsgDiv = document.createElement('div');
+                    aiMsgDiv.className = 'ai-message ai-response';
+                    aiMsgDiv.innerHTML = `
+                        <div class="avatar"><i class="fas fa-robot"></i></div>
+                        <div class="message-content">${result}</div>
+                    `;
+                    aiConversation.appendChild(aiMsgDiv);
+                } else {
+                    alert('与AI通信时出错，请稍后再试');
+                }
+            } catch (error) {
+                console.error('请求失败:', error);
+                alert('无法连接到服务器');
+            }
+        });
+    }
+
+
+
+
+
+
+
+
 // 为保存按钮添加点击事件监听器
 if (saveButton) {
     saveButton.addEventListener('click', function() {
