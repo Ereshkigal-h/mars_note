@@ -7,6 +7,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const editorWrapper = document.querySelector('.editor-wrapper');
     const token = localStorage.getItem('token');
     const loginButton = document.getElementById('loginButton');
+    const saveButton = document.querySelector('.menu-item');// 获取保存按钮元素
+
+// 为保存按钮添加点击事件监听器
+if (saveButton) {
+    saveButton.addEventListener('click', function() {
+        const editorArea = document.querySelector('.editor-area');
+        const content = editorArea.innerHTML; // 获取编辑区域的内容
+        saveNote(content); // 调用保存函数
+    });
+}
 
     console.log('读取 Token:', token); // 确保没有多余字符
 
@@ -104,4 +114,22 @@ if (loginButton) {
         // 替换为实际的登录页面 URL
         window.location.href = '../logpage/login.html';
     });
+}
+
+// 保存笔记函数
+function saveNote(content) {
+    fetch('/api/notes/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ content: content })
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('笔记保存成功:', data);
+        })
+        .catch(error => {
+            console.error('笔记保存失败:', error);
+        });
 }
