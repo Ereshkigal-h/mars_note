@@ -4,6 +4,7 @@ import com.mars.pojo.User;
 import com.mars.pojo.AI;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import com.mars.service.AiService;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
