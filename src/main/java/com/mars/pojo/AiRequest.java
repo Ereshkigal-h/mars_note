@@ -7,7 +7,6 @@ import lombok.Data;
 public class AiRequest {
     private User user;
     private String message;
-    private String temperature;
 
     // getters and setters
 }

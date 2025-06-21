@@ -17,12 +17,16 @@ import com.mars.service.AiService;
 public class AiController {
     @Autowired
     private AiService aiService;
-
+    private AI ai=new AI();
     @PostMapping
     public ResponseEntity<Object> AiMessage(@RequestBody AiRequest request) {
-        log.info("收到AI请求，用户ID: {}", request.getUser().getUserId());
+//        log.info("收到AI请求，用户ID: {}", request.getUser().getUserId());
         try {
-            String resultMessage = aiService.GetAiMessage(request.getUser(), request.getMessage(), request.getAi(), request.getTemperature());
+            User user1 = new User();
+            user1.setUserName("1111111");
+            user1.setUserId(123132424);
+            String resultMessage = aiService.GetAiMessage(user1, request.getMessage(),
+                    ai);
             return new ResponseEntity<>(resultMessage, HttpStatus.OK);
         } catch (Exception e) {
             log.error("AI请求失败", e);
