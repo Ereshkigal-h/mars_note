@@ -184,13 +184,23 @@ if (loginButton) {
 }
 
 // 保存笔记函数
-function saveNote(content) {
-    fetch('/api/notes/update', {
+function saveNote() {
+    const editorArea = document.querySelector('.editor-area');
+    const content = editorArea.innerHTML; // 获取编辑区域的内容
+    const userNameInput = document.getElementById('username'); // 假设用户名输入框的 id 是 'username'
+    const userName = userNameInput ? userNameInput.value.trim() : "defaultUser"; // 获取用户名或使用默认值
+
+    const noteData = {
+        content: content,
+        userName: userName
+    };
+
+    fetch('/notes', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ content: content })
+        body: JSON.stringify(noteData)
     })
         .then(response => response.json())
         .then(data => {

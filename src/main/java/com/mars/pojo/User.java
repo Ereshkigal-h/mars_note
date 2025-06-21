@@ -14,9 +14,4 @@ public class User {
     private String userName;
     private String passwordHash;
     private String availableAitype;
-    private ArrayList<Long> noteId;
-
-    public void addNoteId(long noteId) {
-        this.noteId.add(noteId);
-    }
 }

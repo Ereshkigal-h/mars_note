@@ -16,6 +16,6 @@ public class Note {
     private String content;      // 笔记内容
     private LocalDateTime createdAt; // 创建时间
     private LocalDateTime updatedAt; // 更新时间
-    private Long userId;         // 关联的用户ID
+    private String userName;         // 关联的用户
     private String noteAddress;
 }
