@@ -5,7 +5,8 @@ import lombok.Data;
 
 @Data
 public class AiRequest {
-    private User user;
+    private long userId;
+    private String username;
     private String message;
 
     // getters and setters

@@ -1,6 +1,5 @@
 package com.mars.service.impl;
 
-import com.mars.pojo.User;
 import com.mars.pojo.AI;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
@@ -16,13 +15,13 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 @Service
-public class AiServicelmpl implements AiService {
+public class AiServiceImpl implements AiService {
     @Override
-    public String GetAiMessage(User user, String message, AI ai) throws Exception {
+    public String GetAiMessage(long userId,String message, AI ai) throws Exception {
         // 构建请求体
         JSONObject jsonObject = new JSONObject();
         jsonObject.set("model", "x1"); // 模型名称
-        jsonObject.set("user", String.valueOf(user.getUserId())); // 用户ID
+        jsonObject.set("user", String.valueOf(userId)); // 用户ID
 
         // 构建 messages 数组
         JSONArray messagesArray = new JSONArray();

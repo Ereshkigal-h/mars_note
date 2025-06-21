@@ -20,13 +20,10 @@ public class AiController {
     private AI ai=new AI();
     @PostMapping
     public ResponseEntity<Object> AiMessage(@RequestBody AiRequest request) {
-//        log.info("收到AI请求，用户ID: {}", request.getUser().getUserId());
+        log.info("收到AI请求，用户ID: {}", request.getUserId());
         try {
-            User user1 = new User();
-            user1.setUserName("1111111");
-            user1.setUserId(123132424);
-            String resultMessage = aiService.GetAiMessage(user1, request.getMessage(),
-                    ai);
+            String resultMessage = aiService.GetAiMessage(request.getUserId(), request.getMessage(),
+                    new AI());
             return new ResponseEntity<>(resultMessage, HttpStatus.OK);
         } catch (Exception e) {
             log.error("AI请求失败", e);
