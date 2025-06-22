@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
         saveButton.addEventListener('click', async function() {
             try {
                 const editorContent = document.querySelector('.editor-area').innerText;
-                const response = await fetch('http://localhost:8080/update', {
+                const response = await fetch('http://localhost:8080/notes', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -212,36 +212,8 @@ const loginButton = document.getElementById('loginButton');
 
 // 为登录按钮添加点击事件监听器
 if (loginButton) {
-    loginButton.addEventListener('click', function() {
+    loginButton.addEventListener('click', function () {
         // 替换为实际的登录页面 URL
         window.location.href = '../logpage/login.html';
     });
-}
-
-// 保存笔记函数
-function saveNote() {
-    const editorArea = document.querySelector('.editor-area');
-    const content = editorArea.innerHTML; // 获取编辑区域的内容
-    const userNameInput = document.getElementById('username'); // 假设用户名输入框的 id 是 'username'
-    const userName = userNameInput ? userNameInput.value.trim() : "defaultUser"; // 获取用户名或使用默认值
-
-    const noteData = {
-        content: content,
-        userName: userName
-    };
-
-    fetch('/notes', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(noteData)
-    })
-        .then(response => response.json())
-        .then(data => {
-            console.log('笔记保存成功:', data);
-        })
-        .catch(error => {
-            console.error('笔记保存失败:', error);
-        });
 }
