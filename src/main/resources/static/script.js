@@ -45,7 +45,32 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-// 为保存按钮添加点击事件监听器
+    if (saveButton) {
+        saveButton.addEventListener('click', async function() {
+            try {
+                const editorContent = document.querySelector('.editor-area').innerText;
+
+                const response = await fetch('http://localhost:8080/notes', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: editorContent, //编辑器内容
+                        userName: "1292384382@qq.com"
+                    })
+                });
+
+                const result = await response.json();
+                console.log('保存成功:', result);
+                alert('保存成功');
+            } catch (error) {
+                console.error('保存失败:', error);
+                alert('保存失败，请重试');
+            }
+        });
+    }
+
     if (saveButton) {
         saveButton.addEventListener('click', function() {
             const editorArea = document.querySelector('.editor-area');

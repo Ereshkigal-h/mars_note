@@ -9,11 +9,11 @@
     </insert>
     <insert id="insertCombineIdNoteUser" parameterType="com.mars.pojo.Note">
         insert into combineid_note_user(note_id, user_name)
-        values (#{noteId}, #{userId})
+        values (#{noteId}, #{userName})
 
     </insert>
     <update id="updateNoteAds" parameterType="com.mars.pojo.Note">
-        update note_Id
+        update note_id_address
         set note_address=#{noteAddress}
         where note_Id=#{noteId}
     </update>
