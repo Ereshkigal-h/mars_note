@@ -31,11 +31,62 @@
 
         <div class="editor-wrapper">
             <div class="editor-container">
+
+                <!-- 新增功能区 -->
+                <div class="editor-toolbar">
+                    <div class="tool-group">
+                        <button id="clearFormatBtn" title="清除格式"><i class="fas fa-eraser"></i> 清除格式</button>
+                    </div>
+                    <div class="tool-group">
+                        <select id="fontFamily">
+                            <option value="Arial">Arial</option>
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="Courier New">Courier New</option>
+                            <option value="Verdana">Verdana</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Palatino">Palatino</option>
+                        </select>
+                    </div>
+                    <div class="tool-group">
+                        <select id="fontSize">
+                            <option value="8">8px</option>
+                            <option value="10">10px</option>
+                            <option value="12">12px</option>
+                            <option value="14">14px</option>
+                            <option value="16" selected>16px</option>
+                            <option value="18">18px</option>
+                            <option value="20">20px</option>
+                            <option value="24">24px</option>
+                            <option value="28">28px</option>
+                            <option value="32">32px</option>
+                            <option value="36">36px</option>
+                            <option value="48">48px</option>
+                            <option value="64">64px</option>
+                        </select>
+                    </div>
+                    <div class="tool-group">
+                        <button id="textColorBtn" title="文本颜色"><i class="fas fa-font"></i> 颜色</button>
+                    </div>
+                    <div class="tool-group">
+                        <button id="boldBtn" title="加粗"><i class="fas fa-bold"></i> 加粗</button>
+                        <button id="italicBtn" title="斜体"><i class="fas fa-italic"></i> 斜体</button>
+                        <button id="underlineBtn" title="下划线"><i class="fas fa-underline"></i> 下划线</button>
+                    </div>
+                    <div class="tool-group">
+                        <button id="indentBtn" title="首行缩进"><i class="fas fa-indent"></i> 首行缩进</button>
+                    </div>
+                    <div class="tool-group">
+                        <button id="alignLeftBtn" title="居左对齐"><i class="fas fa-align-left"></i> 居左</button>
+                        <button id="alignCenterBtn" title="居中对齐"><i class="fas fa-align-center"></i> 居中</button>
+                        <button id="alignRightBtn" title="居右对齐"><i class="fas fa-align-right"></i> 居右</button>
+                    </div>
+                </div>
                 <div class="editor-area" contenteditable="true">
-                    <!-- 可编辑区域 -->
                     <p>在这里输入你的内容...</p>
                 </div>
             </div>
+        </div>
+
         </div>
 
         <!-- ai 侧边栏-->

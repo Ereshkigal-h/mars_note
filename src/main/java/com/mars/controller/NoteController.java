@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/notes")
+@RequestMapping
 public class NoteController {
 
     @Autowired
     private NoteService noteService;
 
-    @PostMapping
+    @PostMapping("/notes")
     public Note saveNote(@RequestBody CreateNoteRequest request) { // 修改方法参数
         try {
             return noteService.saveNote(request);

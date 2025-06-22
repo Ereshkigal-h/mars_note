@@ -48,7 +48,7 @@ public class NoteServiceImpl implements NoteService {
             // 生成唯一文件名：note_用户名_时间戳.txt
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
             String fileName = "note_" + request.getUserName() + "_" + timestamp + ".txt";
-              String saveDir = "C:/Users/Administrator/Downloads/";// 默认存储目录
+            String saveDir = "./downloads";// 默认存储目录
 
             // 确保目录存在
             java.nio.file.Path dirPath = java.nio.file.Paths.get(saveDir);
