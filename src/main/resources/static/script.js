@@ -45,35 +45,60 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 保存功能
+// 为保存按钮添加点击事件监听器
     if (saveButton) {
-        saveButton.addEventListener('click', async function() {
-            try {
-                const editorContent = editorArea.innerText;
-                const response = await fetch('http://localhost:8080/update', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
-                        content: editorContent
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`保存失败: ${response.status}`);
-                }
-
-                const result = await response.json();
-                console.log('保存成功:', result);
-                alert('保存成功');
-            } catch (error) {
-                console.error('保存失败:', error);
-                alert('保存失败，请重试');
-            }
+        saveButton.addEventListener('click', function() {
+            const editorArea = document.querySelector('.editor-area');
+            const content = editorArea.innerHTML; // 获取编辑区域的内容
+            saveNote(content); // 调用保存函数
         });
     }
+
+    console.log('读取 Token:', token); // 确保没有多余字符
+
+    if (!token) {
+        window.location.href = '../logpage/login.html';
+        return;
+    }
+
+    fetch('/verify/token', {
+        method: 'POST',
+        headers: {
+            'Authorization': token
+        }
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.valid) {
+                console.log('欢迎用户:', data.username);
+
+                // 隐藏登录按钮，显示登出按钮
+                if (loginButton) {
+                    loginButton.style.display = 'none';
+                }
+
+                let logoutButton = document.getElementById('logoutButton');
+                if (!logoutButton) {
+                    logoutButton = document.createElement('button');
+                    logoutButton.id = 'logoutButton';
+                    logoutButton.textContent = '登出';
+                    logoutButton.style.marginLeft = '10px';
+                    logoutButton.addEventListener('click', function () {
+                        localStorage.removeItem('token');
+                        window.location.href = '../logpage/login.html';
+                    });
+
+                    // 假设将登出按钮插入到 AI 按钮旁边
+                    if (aiButton) {
+                        aiButton.parentNode.appendChild(logoutButton);
+                    }
+                }
+
+            } else {
+                localStorage.removeItem('token');
+                window.location.href = '../logpage/login.html';
+            }
+        });
 
     // AI按钮切换
     aiButton.addEventListener('click', function() {

@@ -41,8 +41,8 @@ public class NoteServiceImpl implements NoteService {
 
         try {
             // 首次插入数据库获取noteId（此时noteAddress设为当前目录）
-//            noteMapper.insertNoteAddress(note); // 执行后note.getNoteId()将被填充
-//            noteMapper.insertCombineIdNoteUser(note);
+            noteMapper.insertNoteAddress(note); // 执行后note.getNoteId()将被填充
+            noteMapper.insertCombineIdNoteUser(note);
 
             String content = note.getContent(); // 获取Note的content字段
             // 生成唯一文件名：note_用户名_时间戳.txt
@@ -70,7 +70,7 @@ public class NoteServiceImpl implements NoteService {
             }
 
             note.setNoteAddress(filePath.toString());
-//            noteMapper.updateNoteAds(note);
+            noteMapper.updateNoteAds(note);
             return note;
         } catch (Exception e) {
             // 记录详细错误信息以便调试

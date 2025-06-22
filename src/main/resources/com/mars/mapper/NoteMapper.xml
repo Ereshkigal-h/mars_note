@@ -8,18 +8,18 @@
         values (#{noteAddress})
     </insert>
     <insert id="insertCombineIdNoteUser" parameterType="com.mars.pojo.Note">
-        insert into combineid_note_user(note_id, user_id)
+        insert into combineid_note_user(note_id, user_name)
         values (#{noteId}, #{userId})
 
     </insert>
     <update id="updateNoteAds" parameterType="com.mars.pojo.Note">
-        update note_id
+        update note_Id
         set note_address=#{noteAddress}
-        where note_id=#{noteId}
+        where note_Id=#{noteId}
     </update>
     <select id="selectNoteAddress" parameterType="com.mars.pojo.Note">
         select note_address
         from note_id_address
-        where note_id = #{noteId}
+        where note_Id = #{noteId}
     </select>
 </mapper>

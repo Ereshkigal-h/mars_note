@@ -20,12 +20,12 @@
     <update id="update" parameterType="com.mars.pojo.User">
         update users
         set passwd_hash=#{passwordHash}, available_aitype=#{availableAiType}
-        where user_id = #{userId}
+        where user_name = #{userName}
     </update>
 
     <select id="selectUserById" resultMap="UserResultMap">
         select user_name,passwd_hash,available_aitype from users
-        where user_id=#{userId}
+        where user_Id=#{userId}
     </select>
 
     <select id="selectUserByName" resultMap="UserResultMap">
@@ -41,7 +41,7 @@
     <select id="selectNoteId" resultType="java.lang.Long">
         select note_id
         from combineid_note_user
-        where user_id = #{userId}
+        where user_name = #{userName}
     </select>
 
 

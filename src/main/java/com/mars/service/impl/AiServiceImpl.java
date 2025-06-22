@@ -42,7 +42,7 @@ public class AiServiceImpl implements AiService {
 
         JSONObject webSearchConfig = new JSONObject();
         webSearchConfig.set("enable", true); // 启用 web_search
-        webSearchConfig.set("search_mode", "deep"); // 搜索模式为 deep
+        webSearchConfig.set("search_mode", "normal"); // 搜索模式为 normal
         toolObject.set("web_search", webSearchConfig);
 
         toolsArray.put(toolObject);
