@@ -15,10 +15,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         .then(data => {
             if (data.code === 1) {
                 const token = data.data;
-                console.log('收到 Token:', token); // 打印 token 查看格式
                 localStorage.setItem('token', token);
                 window.location.href = '../index/index.html';
             }
         });
-
 });

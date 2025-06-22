@@ -7,7 +7,42 @@ document.addEventListener('DOMContentLoaded', function() {
     const editorWrapper = document.querySelector('.editor-wrapper');
     const token = localStorage.getItem('token');
     const loginButton = document.getElementById('loginButton');
-    const saveButton = document.querySelector('.menu-item');// 获取保存按钮元素
+    const username = localStorage.getItem('username');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+
+    if (username) {
+        welcomeMessage.textContent = `欢迎，${username}`;
+    }else {
+        welcomeMessage.textContent = '未登录用户';
+    }
+
+
+    const saveButton = document.getElementById('saveButton');
+
+    if (saveButton) {
+        saveButton.addEventListener('click', async function() {
+            try {
+                const editorContent = document.querySelector('.editor-area').innerText;
+                const response = await fetch('http://localhost:8080/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        content: editorContent //编辑器内容
+                    })
+                });
+
+                const result = await response.json();
+                console.log('保存成功:', result);
+                alert('保存成功');
+            } catch (error) {
+                console.error('保存失败:', error);
+                alert('保存失败，请重试');
+            }
+        });
+    }
+
 
 
 

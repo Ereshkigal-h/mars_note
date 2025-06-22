@@ -434,3 +434,7 @@ body {
     background-color: #d1e7dd;
     margin-left: auto;
 }
+
+#welcomeMessage{
+    margin-left: 15px;
+}
