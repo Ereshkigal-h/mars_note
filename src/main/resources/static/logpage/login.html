@@ -144,8 +144,9 @@
 
                 // 根据返回结果处理
                 if (result.code === 1) { // 成功
-                    // 保存Token到localStorage
+                    // 保存Token和用户名到localStorage
                     localStorage.setItem('token', result.data);
+                    localStorage.setItem('username', username);  // 存储用户名
                     // 跳转到主页
                     window.location.href = '../index.html';
                 } else { // 失败
