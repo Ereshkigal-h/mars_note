@@ -3,6 +3,7 @@ package com.mars.service.impl;
 import com.mars.pojo.AI;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import com.mars.service.AiService;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import java.io.InputStreamReader;
 @Service
 public class AiServiceImpl implements AiService {
     @Override
-    public String GetAiMessage(long userId,String message, AI ai) throws Exception {
+    public String GetAiMessage(long userId, String message, AI ai) throws Exception {
         // 构建请求体
         JSONObject jsonObject = new JSONObject();
         jsonObject.set("model", "x1"); // 模型名称
@@ -88,14 +89,35 @@ public class AiServiceImpl implements AiService {
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
-        StringBuilder response = new StringBuilder();
+        StringBuilder responseContent = new StringBuilder();
 
         while ((inputLine = in.readLine()) != null) {
-            response.append(inputLine);
+            if (inputLine.startsWith("data: ")) {
+                String jsonStr = inputLine.substring(6); // 去掉前面的"data: "
+                try {
+                    JSONObject data = JSONUtil.parseObj(jsonStr);
+                    if (data.containsKey("choices")) {
+                        JSONArray choices = data.getJSONArray("choices");
+                        if (choices.size() > 0) {
+                            JSONObject choice = choices.getJSONObject(0);
+                            if (choice.containsKey("delta")) {
+                                JSONObject delta = choice.getJSONObject("delta");
+                                if (delta.containsKey("reasoning_content")) {
+                                    String content = delta.getStr("reasoning_content");
+                                    if (content != null && !content.isEmpty()) {
+                                        responseContent.append(content);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    // 忽略JSON解析错误，继续处理下一行
+                }
+            }
         }
         in.close();
 
-        String jsonStr = response.toString();
-        return jsonStr.isEmpty() ? "" : jsonStr;
+        return responseContent.toString();
     }
 }
