@@ -88,16 +88,7 @@ body {
     background: linear-gradient(135deg, #4a7dee, #0056b3);
 }
 
-.edit {
-    background: linear-gradient(135deg, #17a2b8, #138496);
-    color: white;
-    padding: 8px 15px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-    user-select: none;
-    transition: all 0.2s ease;
-}
+
 
 .edit:hover {
     background: linear-gradient(135deg, #138496, #117a8b);
@@ -431,7 +422,7 @@ body {
 }
 
 .user-message .message-content {
-    background-color: #d1e7dd;
+    background-color: #000000;
     margin-left: auto;
 }
 

@@ -14,7 +14,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const aiSend = document.getElementById('ai-send');
     const aiInput = document.getElementById('ai-input');
     const aiConversation = document.querySelector('.ai-conversation');
-    const editorArea = document.querySelector('.editor-area');
+    const help = document.getElementById('help');
+
+    if(help){
+        help.addEventListener('click', function() {
+            window.location.href = 'https://github.com/Ereshkigal-h/mars_note';
+        });
+    }
 
     // 用户欢迎信息
     if (username) {
@@ -57,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     body: JSON.stringify({
                         content: editorContent, //编辑器内容
-                        userName: "1292384382@qq.com"
+                        userName: username
                     })
                 });
 
