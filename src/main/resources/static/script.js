@@ -243,3 +243,88 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+const editorArea = document.querySelector('.editor-area');
+const clearFormatBtn = document.getElementById('clearFormatBtn');
+const fontFamilySelect = document.getElementById('fontFamily');
+const fontSizeSelect = document.getElementById('fontSize');
+const textColorBtn = document.getElementById('textColorBtn');
+const boldBtn = document.getElementById('boldBtn');
+const italicBtn = document.getElementById('italicBtn');
+const underlineBtn = document.getElementById('underlineBtn');
+const indentBtn = document.getElementById('indentBtn');
+const alignLeftBtn = document.getElementById('alignLeftBtn');
+const alignCenterBtn = document.getElementById('alignCenterBtn');
+const alignRightBtn = document.getElementById('alignRightBtn');
+
+// 清除格式
+clearFormatBtn.addEventListener('click', () => {
+    document.execCommand('removeFormat', false, null);
+    editorArea.focus();
+});
+
+// 调整字体大小（允许多次反复调节，并根据按钮值正确设置字体大小）
+fontSizeSelect.addEventListener('change', () => {
+    const selectedSize = fontSizeSelect.value;
+    document.execCommand('fontSize', false, selectedSize);
+    editorArea.focus();
+});
+
+// 调整字体颜色（使用调色盘）
+textColorBtn.addEventListener('click', () => {
+    const colorInput = document.createElement('input');
+    colorInput.type = 'color';
+    colorInput.style.display = 'none';
+    document.body.appendChild(colorInput);
+
+    colorInput.addEventListener('change', function() {
+        document.execCommand('foreColor', false, this.value);
+        document.body.removeChild(colorInput);
+        editorArea.focus();
+    });
+
+    colorInput.click();
+});
+
+// 字体加粗
+boldBtn.addEventListener('click', () => {
+    document.execCommand('bold', false, null);
+    editorArea.focus();
+});
+
+// 转变为斜体
+italicBtn.addEventListener('click', () => {
+    document.execCommand('italic', false, null);
+    editorArea.focus();
+});
+
+// 增加下划线
+underlineBtn.addEventListener('click', () => {
+    document.execCommand('underline', false, null);
+    editorArea.focus();
+});
+
+// 首行缩进
+indentBtn.addEventListener('click', () => {
+    document.execCommand('indent', false, null);
+    editorArea.focus();
+});
+
+// 居左对齐
+alignLeftBtn.addEventListener('click', () => {
+    document.execCommand('justifyLeft', false, null);
+    editorArea.focus();
+});
+
+// 居中对齐
+alignCenterBtn.addEventListener('click', () => {
+    document.execCommand('justifyCenter', false, null);
+    editorArea.focus();
+});
+
+// 居右对齐
+alignRightBtn.addEventListener('click', () => {
+    document.execCommand('justifyRight', false, null);
+    editorArea.focus();
+});
