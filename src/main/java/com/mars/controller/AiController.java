@@ -2,8 +2,6 @@ package com.mars.controller;
 
 import com.mars.pojo.AI;
 import com.mars.pojo.AiRequest;
-import com.mars.pojo.Result;
-import com.mars.pojo.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,7 +15,6 @@ import com.mars.service.AiService;
 public class AiController {
     @Autowired
     private AiService aiService;
-    private AI ai=new AI();
     @PostMapping
     public ResponseEntity<Object> AiMessage(@RequestBody AiRequest request) {
         log.info("收到AI请求，用户ID: {}", 111111);

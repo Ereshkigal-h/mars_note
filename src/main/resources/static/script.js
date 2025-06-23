@@ -245,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
+// 获取编辑器元素和所有工具按钮
 const editorArea = document.querySelector('.editor-area');
 const clearFormatBtn = document.getElementById('clearFormatBtn');
 const fontFamilySelect = document.getElementById('fontFamily');
@@ -258,73 +259,286 @@ const alignLeftBtn = document.getElementById('alignLeftBtn');
 const alignCenterBtn = document.getElementById('alignCenterBtn');
 const alignRightBtn = document.getElementById('alignRightBtn');
 
-// 清除格式
+// 设置编辑器区域为可编辑
+editorArea.contentEditable = true;
+
+/* ========== 事件监听器 ========== */
+
+// 清除所有格式
 clearFormatBtn.addEventListener('click', () => {
-    document.execCommand('removeFormat', false, null);
-    editorArea.focus();
+    removeAllFormatting(editorArea);
+    updateButtonStates();
 });
 
-// 调整字体大小（允许多次反复调节，并根据按钮值正确设置字体大小）
+// 字体家族
+fontFamilySelect.addEventListener('change', () => {
+    applyFontFamily(fontFamilySelect.value);
+});
+
+// 字体大小 - 改进实现
 fontSizeSelect.addEventListener('change', () => {
-    const selectedSize = fontSizeSelect.value;
-    document.execCommand('fontSize', false, selectedSize);
-    editorArea.focus();
+    applyFontSize(fontSizeSelect.value + 'px');
 });
 
-// 调整字体颜色（使用调色盘）
+// 文本颜色
 textColorBtn.addEventListener('click', () => {
-    const colorInput = document.createElement('input');
-    colorInput.type = 'color';
-    colorInput.style.display = 'none';
-    document.body.appendChild(colorInput);
-
-    colorInput.addEventListener('change', function() {
-        document.execCommand('foreColor', false, this.value);
-        document.body.removeChild(colorInput);
-        editorArea.focus();
-    });
-
-    colorInput.click();
+    const color = prompt('输入颜色值 (名称或十六进制):', '#000000');
+    if (color) {
+        applyTextColor(color);
+    }
 });
 
-// 字体加粗
-boldBtn.addEventListener('click', () => {
-    document.execCommand('bold', false, null);
-    editorArea.focus();
-});
+// 文本样式按钮
+boldBtn.addEventListener('click', () => toggleTextStyle('fontWeight', 'bold'));
+italicBtn.addEventListener('click', () => toggleTextStyle('fontStyle', 'italic'));
+underlineBtn.addEventListener('click', () => toggleTextStyle('textDecoration', 'underline'));
 
-// 转变为斜体
-italicBtn.addEventListener('click', () => {
-    document.execCommand('italic', false, null);
-    editorArea.focus();
-});
+// 对齐按钮
+alignLeftBtn.addEventListener('click', () => setTextAlignment('left'));
+alignCenterBtn.addEventListener('click', () => setTextAlignment('center'));
+alignRightBtn.addEventListener('click', () => setTextAlignment('right'));
 
-// 增加下划线
-underlineBtn.addEventListener('click', () => {
-    document.execCommand('underline', false, null);
-    editorArea.focus();
-});
-
-// 首行缩进
+// 缩进
 indentBtn.addEventListener('click', () => {
+    applyIndent();
+});
+
+/* ========== 核心功能函数 ========== */
+
+// 应用字体大小
+function applyFontSize(size) {
+    const selection = window.getSelection();
+    if (!isValidSelection(selection)) return;
+
+    // 保存当前选区
+    saveSelection();
+
+    // 移除现有的字体大小样式
+    removeFormattingByProperty('fontSize');
+
+    // 应用新的字体大小
+    if (selection.toString().trim() !== '') {
+        document.execCommand('fontSize', false, '7'); // 创建font标签
+        const fontElements = editorArea.getElementsByTagName('font');
+        const lastFont = fontElements[fontElements.length - 1];
+        if (lastFont && lastFont.size === '7') {
+            lastFont.removeAttribute('size');
+            lastFont.style.fontSize = size;
+        }
+    } else {
+        // 没有选中文本时设置默认样式
+        editorArea.style.fontSize = size;
+    }
+
+    // 恢复选区
+    restoreSelection();
+    updateButtonStates();
+}
+
+// 应用字体家族
+function applyFontFamily(fontFamily) {
+    const selection = window.getSelection();
+    if (!isValidSelection(selection)) return;
+
+    saveSelection();
+    document.execCommand('fontName', false, fontFamily);
+    restoreSelection();
+    updateButtonStates();
+}
+
+// 应用文本颜色
+function applyTextColor(color) {
+    const selection = window.getSelection();
+    if (!isValidSelection(selection)) return;
+
+    saveSelection();
+    document.execCommand('foreColor', false, color);
+    restoreSelection();
+    updateButtonStates();
+}
+
+// 切换文本样式
+function toggleTextStyle(property, value) {
+    const selection = window.getSelection();
+    if (!isValidSelection(selection)) return;
+
+    saveSelection();
+
+    // 检查是否已应用该样式
+    const isApplied = document.queryCommandState(property === 'fontWeight' ? 'bold' :
+        property === 'fontStyle' ? 'italic' : 'underline');
+
+    if (isApplied) {
+        document.execCommand(property === 'fontWeight' ? 'bold' :
+            property === 'fontStyle' ? 'italic' : 'underline', false, null);
+    } else {
+        const span = document.createElement('span');
+        span.style[property] = value;
+        surroundSelection(span);
+    }
+
+    restoreSelection();
+    updateButtonStates();
+}
+
+// 设置文本对齐
+function setTextAlignment(align) {
+    const selection = window.getSelection();
+    if (!isValidSelection(selection)) return;
+
+    saveSelection();
+    document.execCommand('justify' + align.charAt(0).toUpperCase() + align.slice(1), false, null);
+    restoreSelection();
+    updateAlignmentButtons(align);
+}
+
+// 应用缩进
+function applyIndent() {
+    const selection = window.getSelection();
+    if (!isValidSelection(selection)) return;
+
+    saveSelection();
     document.execCommand('indent', false, null);
-    editorArea.focus();
-});
+    restoreSelection();
+    updateButtonStates();
+}
 
-// 居左对齐
-alignLeftBtn.addEventListener('click', () => {
-    document.execCommand('justifyLeft', false, null);
-    editorArea.focus();
-});
+/* ========== 选区管理函数 ========== */
 
-// 居中对齐
-alignCenterBtn.addEventListener('click', () => {
-    document.execCommand('justifyCenter', false, null);
-    editorArea.focus();
-});
+let savedRange = null;
 
-// 居右对齐
-alignRightBtn.addEventListener('click', () => {
-    document.execCommand('justifyRight', false, null);
-    editorArea.focus();
+// 保存当前选区
+function saveSelection() {
+    const selection = window.getSelection();
+    if (selection.rangeCount > 0) {
+        savedRange = selection.getRangeAt(0);
+    }
+}
+
+// 恢复选区
+function restoreSelection() {
+    if (savedRange) {
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(savedRange);
+    }
+}
+
+// 检查选区是否有效
+function isValidSelection(selection) {
+    return selection.rangeCount > 0 &&
+        !selection.isCollapsed &&
+        editorArea.contains(selection.anchorNode);
+}
+
+/* ========== 格式处理函数 ========== */
+
+// 移除所有格式
+function removeAllFormatting(element) {
+    document.execCommand('removeFormat', false, null);
+    element.querySelectorAll('font, span, div').forEach(el => {
+        if (el.hasAttribute('style') && !el.getAttribute('style').trim()) {
+            el.removeAttribute('style');
+        }
+        if (!el.hasAttributes() && el.tagName.toLowerCase() === 'span') {
+            const parent = el.parentNode;
+            while (el.firstChild) {
+                parent.insertBefore(el.firstChild, el);
+            }
+            parent.removeChild(el);
+        }
+    });
+}
+
+// 移除特定属性格式
+function removeFormattingByProperty(property) {
+    const elements = editorArea.querySelectorAll('[style*="' + property + '"]');
+    elements.forEach(el => {
+        el.style[property] = '';
+        if (!el.getAttribute('style')) {
+            el.removeAttribute('style');
+        }
+    });
+}
+
+// 环绕选区
+function surroundSelection(element) {
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+
+    try {
+        const range = selection.getRangeAt(0);
+        range.surroundContents(element);
+    } catch (e) {
+        // 处理跨元素选区的情况
+        const range = selection.getRangeAt(0);
+        const content = range.extractContents();
+        element.appendChild(content);
+        range.insertNode(element);
+    }
+}
+
+/* ========== 状态管理函数 ========== */
+
+// 更新按钮状态
+function updateButtonStates() {
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0 || !editorArea.contains(selection.anchorNode)) return;
+
+    // 更新样式按钮状态
+    boldBtn.classList.toggle('active', document.queryCommandState('bold'));
+    italicBtn.classList.toggle('active', document.queryCommandState('italic'));
+    underlineBtn.classList.toggle('active', document.queryCommandState('underline'));
+
+    // 更新字体大小选择器
+    updateFontSizeSelector();
+}
+
+// 更新字体大小选择器
+function updateFontSizeSelector() {
+    const selection = window.getSelection();
+    if (selection.rangeCount === 0) return;
+    const range = selection.getRangeAt(0);
+    let element = range.commonAncestorContainer;
+
+    if (element.nodeType === Node.TEXT_NODE) {
+        element = element.parentElement;
+    }
+
+    const fontSize = window.getComputedStyle(element).fontSize;
+    if (fontSize) {
+        const sizeValue = parseInt(fontSize);
+        Array.from(fontSizeSelect.options).forEach(option => {
+            if (parseInt(option.value) === sizeValue) {
+                option.selected = true; // 设置为目标选项
+            } else {
+                option.selected = false; // 清除其他选项的 selected 状态
+            }
+
+        })
+    }
+
+
+}
+
+// 更新对齐按钮状态
+function updateAlignmentButtons(alignment) {
+    alignLeftBtn.classList.toggle('active', alignment === 'left');
+    alignCenterBtn.classList.toggle('active', alignment === 'center');
+    alignRightBtn.classList.toggle('active', alignment === 'right');
+}
+
+/* ========== 事件监听 ========== */
+
+// 监听选区变化
+document.addEventListener('selectionchange', updateButtonStates);
+
+// 编辑器点击时更新状态
+editorArea.addEventListener('click', updateButtonStates);
+
+// 初始化编辑器
+editorArea.addEventListener('focus', () => {
+    if (editorArea.innerHTML === '') {
+        editorArea.innerHTML = '<p><br></p>'; // 确保有可编辑的内容
+    }
 });

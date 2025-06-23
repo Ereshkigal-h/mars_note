@@ -2,24 +2,15 @@ package com.mars.service.impl;
 
 import com.mars.mapper.NoteMapper;
 import com.mars.pojo.Note;
-import com.mars.pojo.User;
 import com.mars.service.NoteService;
 import com.mars.pojo.CreateNoteRequest; // 导入新类
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionSystemException;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
