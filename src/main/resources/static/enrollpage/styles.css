@@ -154,3 +154,28 @@ a:hover {
 input.error {
     border-color: #e74c3c;
 }
+/*!* 定义常规字体 *!*/
+/*@font-face {*/
+/*    font-family: 'MyFont'; !* 自定义字体名称 *!*/
+/*    src: url('/fonts/MyFont-Regular.woff2') format('woff2'), !* 首选格式 *!*/
+/*    url('/fonts/MyFont-Regular.woff') format('woff');   !* 备选格式 *!*/
+/*    font-weight: normal; !* 字体粗细 *!*/
+/*    font-style: normal;  !* 字体样式 *!*/
+/*}*/
+
+/*!* 定义加粗字体 *!*/
+/*@font-face {*/
+/*    font-family: 'MyFont';*/
+/*    src: url('/fonts/MyFont-Bold.woff2') format('woff2'),*/
+/*    url('/fonts/MyFont-Bold.woff') format('woff');*/
+/*    font-weight: bold;*/
+/*    font-style: normal;*/
+/*}*/
+
+/*!* 定义斜体字体 *!*/
+/*@font-face {*/
+/*    font-family: 'MyFont';*/
+/*    src: url('/fonts/MyFont-Italic.ttf') format('truetype');*/
+/*    font-weight: normal;*/
+/*    font-style: italic;*/
+/*}*/

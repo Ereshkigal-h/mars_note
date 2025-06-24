@@ -5,12 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>主界面</title>
     <link rel="stylesheet" href="styles.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+
 </head>
 <body>
     <div class="app-container">
         <div class="menu-bar">
             <div class="menu-item" id="saveButton">保存</div>
-            <div class="menu-item">主题</div>
             <div class="menu-item" id="help">帮助</div>
             <span id="welcomeMessage"></span>
             <div class="ai" id="ai-button">AI助手</div>
@@ -44,6 +47,8 @@
                             <option value="Verdana">Verdana</option>
                             <option value="Georgia">Georgia</option>
                             <option value="Palatino">Palatino</option>
+                            <option value="'Microsoft YaHei', sans-serif">微软雅黑</option>
+                            <option value="'SimSun', serif">宋体</option>
                         </select>
                     </div>
                     <div class="tool-group">
@@ -63,8 +68,12 @@
                             <option value="64">64px</option>
                         </select>
                     </div>
+<!--                    <div class="tool-group">-->
+<!--                        <button id="textColorBtn" title="文本颜色"><i class="fas fa-font"></i> 颜色</button>-->
+<!--                    </div>-->
                     <div class="tool-group">
-                        <button id="textColorBtn" title="文本颜色"><i class="fas fa-font"></i> 颜色</button>
+                        <label for="textColorPicker" title="文本颜色"><i class="fas fa-font"></i> 颜色</label>
+                        <input type="color" id="textColorPicker" value="#ffffff">
                     </div>
                     <div class="tool-group">
                         <button id="boldBtn" title="加粗"><i class="fas fa-bold"></i> 加粗</button>

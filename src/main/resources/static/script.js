@@ -281,12 +281,12 @@ fontSizeSelect.addEventListener('change', () => {
 });
 
 // 文本颜色
-textColorBtn.addEventListener('click', () => {
-    const color = prompt('输入颜色值 (名称或十六进制):', '#000000');
-    if (color) {
-        applyTextColor(color);
-    }
-});
+// textColorBtn.addEventListener('click', () => {
+//     const color = prompt('输入颜色值 (名称或十六进制):', '#000000');
+//     if (color) {
+//         applyTextColor(color);
+//     }
+// });
 
 // 文本样式按钮
 boldBtn.addEventListener('click', () => toggleTextStyle('fontWeight', 'bold'));
@@ -335,14 +335,39 @@ function applyFontSize(size) {
     updateButtonStates();
 }
 
-// 应用字体家族
+// // 应用字体家族
+// function applyFontFamily(fontFamily) {
+//     const selection = window.getSelection();
+//     if (!isValidSelection(selection)) return;
+//
+//     saveSelection();
+//     document.execCommand('fontName', false, fontFamily);
+//     restoreSelection();
+//     updateButtonStates();
+// }
 function applyFontFamily(fontFamily) {
     const selection = window.getSelection();
+
+    // 检查选区有效性
     if (!isValidSelection(selection)) return;
 
+    // 清理字体名称中的非法字符
+    const validFontFamily = fontFamily.replace(/[^a-zA-Z0-9\s]/g, '');
+    console.log(validFontFamily)
+    // 保存选区
     saveSelection();
-    document.execCommand('fontName', false, fontFamily);
+    // 应用字体命令
+    if (typeof document.execCommand === 'function') {
+        document.execCommand('fontName', false, validFontFamily);
+
+    } else {
+        console.warn('document.execCommand is not supported in this browser.');
+    }
+
+    // 恢复选区
     restoreSelection();
+
+    // 更新按钮状态
     updateButtonStates();
 }
 
@@ -356,6 +381,28 @@ function applyTextColor(color) {
     restoreSelection();
     updateButtonStates();
 }
+    const textColorPicker = document.getElementById('textColorPicker');
+
+    // 监听颜色选择器的变化
+    if (textColorPicker) {
+        textColorPicker.addEventListener('input', function() {
+            const selectedColor = textColorPicker.value;
+            applyTextColor(selectedColor);
+        });
+    }
+
+    // // 应用文本颜色到选中的文本
+    // function applyTextColor(color) {
+    //     const selection = window.getSelection();
+    //     if (selection.rangeCount > 0) {
+    //         const range = selection.getRangeAt(0);
+    //         const span = document.createElement('span');
+    //         span.style.color = color;
+    //
+    //         // 将选中的内容包裹在带有颜色样式的<span>标签中
+    //         range.surroundContents(span);
+    //     }
+    // }
 
 // 切换文本样式
 function toggleTextStyle(property, value) {
@@ -541,4 +588,26 @@ editorArea.addEventListener('focus', () => {
     if (editorArea.innerHTML === '') {
         editorArea.innerHTML = '<p><br></p>'; // 确保有可编辑的内容
     }
+});
+
+// 字体家族 - 改进实现
+fontFamilySelect.addEventListener('change', function() {
+    const font = this.value;
+
+    // 保存当前选区
+    const selection = window.getSelection();
+    const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+
+    // 如果选择了文本
+    if (range && !range.collapsed) {
+
+        // 应用新字体
+        document.execCommand('fontName', false, font);
+    } else {
+        // 没有选择文本时，设置整个编辑器的默认字体
+        editorArea.style.fontFamily = font;
+    }
+
+    // 更新按钮状态
+    updateButtonStates();
 });
