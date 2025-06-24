@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mars.mapper.NoteMapper">
+    <insert id="insertNoteAddress" parameterType="com.mars.pojo.Note"
+            useGeneratedKeys="true" keyProperty="noteId">
+        insert into note_id_address(note_address)
+        values (#{noteAddress})
+    </insert>
+    <insert id="insertCombineIdNoteUser" parameterType="com.mars.pojo.Note">
+        insert into combineid_note_user(note_id, user_name)
+        values (#{noteId}, #{userName})
+
+    </insert>
+    <update id="updateNoteAds" parameterType="com.mars.pojo.Note">
+        update note_id_address
+        set note_address=#{noteAddress}
+        where note_Id=#{noteId}
+    </update>
+    <select id="selectNoteAddress" parameterType="com.mars.pojo.Note">
+        select note_address
+        from note_id_address
+        where note_Id = #{noteId}
+    </select>
+</mapper>

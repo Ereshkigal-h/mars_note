@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        html {
+            height: 100%;
+        }
+        body {
+            height: 100%;
+        }
+        .container {
+            height: 100%;
+            background-image: linear-gradient(to right, #fbc2eb, #a6c1ee);
+        }
+        .login-wrapper {
+            background-color: #fff;
+            width: 358px;
+            height: 588px;
+            border-radius: 15px;
+            padding: 0 50px;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .header {
+            font-size: 38px;
+            font-weight: bold;
+            text-align: center;
+            line-height: 200px;
+        }
+        .input-item {
+            display: block;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 0;
+            padding: 10px;
+            border-bottom: 1px solid rgb(128, 125, 125);
+            font-size: 15px;
+            outline: none;
+        }
+        .input-item::placeholder {
+            text-transform: uppercase;
+        }
+        .btn {
+            text-align: center;
+            padding: 10px;
+            width: 100%;
+            margin-top: 40px;
+            background-image: linear-gradient(to right, #a6c1ee, #fbc2eb);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .btn:focus {
+            outline: none;
+        }
+        .btn:active {
+            transform: scale(0.98);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .msg {
+            text-align: center;
+            line-height: 88px;
+        }
+        a {
+            text-decoration-line: none;
+            color: #abc1ee;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="login-wrapper">
+        <div class="header">登录</div>
+        <div class="form-wrapper">
+            <input type="text" name="username" placeholder="用户名" class="input-item" id="username">
+            <input type="password" name="password" placeholder="密码" class="input-item" id="password">
+            <button class="btn" id="loginButton" type="button">登录</button>
+        </div>
+        <div class="msg">
+            没有用户？
+            <a href="#" id="enrollButton">注册</a>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    // 获取注册按钮元素
+    const enrollButton = document.getElementById('enrollButton');
+    // 获取登录按钮和输入框元素
+    const loginButton = document.getElementById('loginButton');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+
+    // 注册按钮点击事件
+    if (enrollButton) {
+        enrollButton.addEventListener('click', function() {
+            window.location.href = '../enrollpage/enroll.html';
+        });
+    }
+
+    // 登录按钮点击事件
+    // 登录按钮点击事件
+    if (loginButton) {
+        loginButton.addEventListener('click', async function() {
+            // 获取输入的用户名和密码
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            // 简单的表单验证
+            if (!username || !password) {
+                alert('请输入用户名和密码');
+                return;
+            }
+
+            // 准备要发送的数据
+            const loginData = {
+                userName: username,
+                passwordHash: password
+            };
+
+            try {
+                // 发送POST请求到/login端点
+                const response = await fetch('../login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(loginData)
+                });
+
+                // 解析响应数据
+                const result = await response.json();
+
+                // 根据返回结果处理
+                if (result.code === 1) { // 成功
+                    // 保存Token和用户名到localStorage
+                    localStorage.setItem('token', result.data);
+                    localStorage.setItem('username', username);  // 存储用户名
+                    // 跳转到主页
+                    window.location.href = '../index.html';
+                } else { // 失败
+                    alert(result.msg || '登录失败，用户名或密码错误');
+                }
+            } catch (error) {
+                console.error('登录出错:', error);
+                alert('登录过程中出现错误，请稍后再试');
+            }
+        });
+    }
+</script>
+</html>
