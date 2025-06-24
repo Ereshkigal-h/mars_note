@@ -279,15 +279,6 @@ fontFamilySelect.addEventListener('change', () => {
 fontSizeSelect.addEventListener('change', () => {
     applyFontSize(fontSizeSelect.value + 'px');
 });
-
-// 文本颜色
-// textColorBtn.addEventListener('click', () => {
-//     const color = prompt('输入颜色值 (名称或十六进制):', '#000000');
-//     if (color) {
-//         applyTextColor(color);
-//     }
-// });
-
 // 文本样式按钮
 boldBtn.addEventListener('click', () => toggleTextStyle('fontWeight', 'bold'));
 italicBtn.addEventListener('click', () => toggleTextStyle('fontStyle', 'italic'));
@@ -334,17 +325,6 @@ function applyFontSize(size) {
     restoreSelection();
     updateButtonStates();
 }
-
-// // 应用字体家族
-// function applyFontFamily(fontFamily) {
-//     const selection = window.getSelection();
-//     if (!isValidSelection(selection)) return;
-//
-//     saveSelection();
-//     document.execCommand('fontName', false, fontFamily);
-//     restoreSelection();
-//     updateButtonStates();
-// }
 function applyFontFamily(fontFamily) {
     const selection = window.getSelection();
 
@@ -390,20 +370,6 @@ function applyTextColor(color) {
             applyTextColor(selectedColor);
         });
     }
-
-    // // 应用文本颜色到选中的文本
-    // function applyTextColor(color) {
-    //     const selection = window.getSelection();
-    //     if (selection.rangeCount > 0) {
-    //         const range = selection.getRangeAt(0);
-    //         const span = document.createElement('span');
-    //         span.style.color = color;
-    //
-    //         // 将选中的内容包裹在带有颜色样式的<span>标签中
-    //         range.surroundContents(span);
-    //     }
-    // }
-
 // 切换文本样式
 function toggleTextStyle(property, value) {
     const selection = window.getSelection();

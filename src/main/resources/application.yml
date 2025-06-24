@@ -6,7 +6,7 @@ spring:
     url: jdbc:mysql://localhost:3306/user_db
     driver-class-name: com.mysql.cj.jdbc.Driver
     username:  root
-    password:  qkl
+    password:  root
 mybatis:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
