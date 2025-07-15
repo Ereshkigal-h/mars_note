@@ -38,7 +38,7 @@ public class NoteServiceImpl implements NoteService {
             String content = note.getContent(); // 获取Note的content字段
             // 生成唯一文件名：note_用户名_时间戳.txt
             String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
-            String fileName = "note_" + request.getUserName() + "_" + timestamp + ".txt";
+            String fileName = "note_" + request.getUserName() + "_" + timestamp + ".md";
             String saveDir = "./downloads";// 默认存储目录
 
             // 确保目录存在
