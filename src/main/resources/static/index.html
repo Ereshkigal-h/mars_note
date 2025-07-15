@@ -26,9 +26,10 @@
         </div>
 
         <div class="sidebar">
-            <div class="sidebar-editor" contenteditable="true">
-                <!-- 侧边栏可编辑区域 -->
-                <p>侧边栏编辑内容...</p>
+            <div class="sidebar-content" id="toc-sidebar">
+                <!-- 这里将动态显示文档标题结构 -->
+                <h4>文档大纲</h4>
+                <div id="toc-container"></div>
             </div>
         </div>
 
@@ -41,50 +42,16 @@
                         <button id="clearFormatBtn" title="清除格式"><i class="fas fa-eraser"></i> 清除格式</button>
                     </div>
                     <div class="tool-group">
-                        <select id="fontFamily">
-                            <option value="Arial">Arial</option>
-                            <option value="Times New Roman">Times New Roman</option>
-                            <option value="Courier New">Courier New</option>
-                            <option value="Verdana">Verdana</option>
-                            <option value="Georgia">Georgia</option>
-                            <option value="Palatino">Palatino</option>
-                            <option value="'Microsoft YaHei', sans-serif">微软雅黑</option>
-                            <option value="'SimSun', serif">宋体</option>
-                        </select>
-                    </div>
-                    <div class="tool-group">
-                        <select id="fontSize">
-                            <option value="8">8px</option>
-                            <option value="10">10px</option>
-                            <option value="12" >12px</option>
-                            <option value="14">14px</option>
-                            <option value="16" selected>16px</option>
-                            <option value="18">18px</option>
-                            <option value="20">20px</option>
-                            <option value="24">24px</option>
-                            <option value="28">28px</option>
-                            <option value="32">32px</option>
-                            <option value="36">36px</option>
-                            <option value="48">48px</option>
-                            <option value="64">64px</option>
-                        </select>
-                    </div>
-                    <div class="tool-group">
-                        <label for="textColorPicker" title="文本颜色"><i class="fas fa-font"></i> 颜色</label>
-                        <input type="color" id="textColorPicker" value="#ffffff">
+                        <button id="h1Btn" title="一级标题">H1</button>
+                        <button id="h2Btn" title="二级标题">H2</button>
+                        <button id="h3Btn" title="三级标题">H3</button>
                     </div>
                     <div class="tool-group">
                         <button id="boldBtn" title="加粗"><i class="fas fa-bold"></i> 加粗</button>
                         <button id="italicBtn" title="斜体"><i class="fas fa-italic"></i> 斜体</button>
                         <button id="underlineBtn" title="下划线"><i class="fas fa-underline"></i> 下划线</button>
-                    </div>
-                    <div class="tool-group">
-                        <button id="indentBtn" title="首行缩进"><i class="fas fa-indent"></i> 首行缩进</button>
-                    </div>
-                    <div class="tool-group">
-                        <button id="alignLeftBtn" title="居左对齐"><i class="fas fa-align-left"></i> 居左</button>
-                        <button id="alignCenterBtn" title="居中对齐"><i class="fas fa-align-center"></i> 居中</button>
-                        <button id="alignRightBtn" title="居右对齐"><i class="fas fa-align-right"></i> 居右</button>
+                        <button id="inlineCodeBtn" title="行内代码"><i class="fas fa-terminal"></i> 代码行</button>
+                        <button id="codeBlockBtn" title="代码块"><i class="fas fa-code"></i> 代码块</button>
                     </div>
                 </div>
                 <div class="editor-area" contenteditable="true" data-markdown></div>

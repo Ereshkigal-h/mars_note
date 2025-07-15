@@ -17,6 +17,378 @@ document.addEventListener('DOMContentLoaded', function() {
     const help = document.getElementById('help');
 
 
+
+    const editor = document.querySelector('.editor-area');
+    const h1Btn = document.getElementById('h1Btn');
+    const h2Btn = document.getElementById('h2Btn');
+    const h3Btn = document.getElementById('h3Btn');
+    const boldBtn = document.getElementById('boldBtn');
+    const italicBtn = document.getElementById('italicBtn');
+    const underlineBtn = document.getElementById('underlineBtn');
+    const clearFormatBtn = document.getElementById('clearFormatBtn');
+    const codeBlockBtn = document.getElementById('codeBlockBtn');
+    const inlineCodeBtn = document.getElementById('inlineCodeBtn');
+
+
+    const markdownEditor = document.querySelector('.editor-area[contenteditable][data-markdown]');
+    const tocContainer = document.getElementById('toc-container');
+
+    // 初始化
+    updateTOC();
+
+    // 监听所有编辑操作（包括回车键）
+    markdownEditor.addEventListener('input', updateTOC);
+    markdownEditor.addEventListener('keydown', function(e) {
+        if(e.key === 'Enter') setTimeout(updateTOC, 10);
+    });
+
+    function updateTOC() {
+        // 关键修复：按行处理内容
+        const content = markdownEditor.innerText || markdownEditor.textContent;
+        const headings = [];
+
+        // 精确分割每一行（包括空行）
+        const lines = content.split(/\r?\n/);
+
+        lines.forEach(line => {
+            const match = line.match(/^(#+)\s+(.+)/);
+            if (match) {
+                headings.push({
+                    level: match[1].length,
+                    text: match[2].trim()
+                });
+            }
+        });
+
+        renderTOC(headings);
+    }
+
+    function renderTOC(headings) {
+        if (headings.length === 0) {
+            tocContainer.innerHTML = '<div class="toc-empty">暂无标题</div>';
+            return;
+        }
+
+        let html = `
+            <div class="toc-title">文档大纲</div>
+            <div class="toc-items">
+        `;
+
+        // 精确还原图片中的圆点样式
+        headings.forEach(h => {
+            html += `
+                <div class="toc-item toc-level-${h.level}">
+                    ${'● '.repeat(h.level)}${h.text}
+                </div>
+            `;
+        });
+
+        html += '</div>';
+        tocContainer.innerHTML = html;
+    }
+
+    // 行内代码按钮点击事件
+    inlineCodeBtn.addEventListener('click', function() {
+        toggleInlineCode();
+    });
+
+    /**
+     * 切换行内代码格式（`code`）
+     */
+    function toggleInlineCode() {
+        const selection = window.getSelection();
+
+        // 如果没有选中内容，插入 ``
+        if (selection.rangeCount === 0 || selection.toString().trim() === '') {
+            const cursorPos = getCursorPosition();
+            editor.innerHTML = editor.innerHTML.slice(0, cursorPos) + '``' + editor.innerHTML.slice(cursorPos);
+
+            // 将光标定位到反引号之间
+            setCursorBetweenBackticks();
+            return;
+        }
+
+        // 如果有选中内容，切换行内代码格式
+        const range = selection.getRangeAt(0);
+        const selectedText = selection.toString();
+
+        // 检查是否已经是行内代码
+        const isAlreadyCode = selectedText.startsWith('`') && selectedText.endsWith('`');
+
+        // 如果是行内代码，移除反引号；否则添加反引号
+        const newText = isAlreadyCode
+            ? selectedText.slice(1, -1)
+            : '`' + selectedText + '`';
+
+        range.deleteContents();
+        range.insertNode(document.createTextNode(newText));
+
+        // 恢复光标位置
+        const newRange = document.createRange();
+        newRange.setStart(range.startContainer, range.startOffset);
+        newRange.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+
+        editor.focus();
+    }
+
+    // 代码块按钮点击事件
+    codeBlockBtn.addEventListener('click', function() {
+        insertCodeBlock();
+    });
+
+    /**
+     * 插入 Markdown 代码块
+     */
+    function insertCodeBlock() {
+        const selection = window.getSelection();
+
+        // 如果没有选中内容，插入一个空代码块
+        if (selection.rangeCount === 0 || selection.toString().trim() === '') {
+            const cursorPos = getCursorPosition();
+            const codeBlock = "```\n\n```";
+            editor.innerHTML = editor.innerHTML.slice(0, cursorPos) + codeBlock + editor.innerHTML.slice(cursorPos);
+
+            // 将光标定位到代码块内部
+            setCursorAfterCodeBlock();
+            return;
+        }
+
+        // 如果有选中内容，将其包裹为代码块
+        const range = selection.getRangeAt(0);
+        const selectedText = selection.toString();
+        const codeBlock = "```\n" + selectedText + "\n```";
+
+        range.deleteContents();
+        range.insertNode(document.createTextNode(codeBlock));
+
+        // 恢复光标位置
+        const newRange = document.createRange();
+        newRange.setStartAfter(range.startContainer);
+        newRange.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+
+        editor.focus();
+    }
+
+    /**
+     * 获取当前光标位置
+     */
+    function getCursorPosition() {
+        const selection = window.getSelection();
+        if (selection.rangeCount === 0) return 0;
+
+        const range = selection.getRangeAt(0);
+        const preCaretRange = range.cloneRange();
+        preCaretRange.selectNodeContents(editor);
+        preCaretRange.setEnd(range.endContainer, range.endOffset);
+        return preCaretRange.toString().length;
+    }
+
+    /**
+     * 将光标定位到代码块内部
+     */
+    function setCursorAfterCodeBlock() {
+        const selection = window.getSelection();
+        const range = document.createRange();
+
+        // 找到代码块的起始位置（```后）
+        const editorText = editor.innerText;
+        const codeBlockStart = editorText.lastIndexOf("```") + 3;
+
+        // 设置光标位置
+        range.setStart(editor.firstChild, codeBlockStart);
+        range.collapse(true);
+
+        selection.removeAllRanges();
+        selection.addRange(range);
+        editor.focus();
+    }
+
+
+    // 加粗按钮
+    boldBtn.addEventListener('click', function() {
+        toggleFormatting('**', '**'); // Markdown 加粗语法
+        // 或者使用 HTML 方式：document.execCommand('bold', false, null);
+    });
+
+    // 斜体按钮
+    italicBtn.addEventListener('click', function() {
+        toggleFormatting('*', '*'); // Markdown 斜体语法
+        // 或者使用 HTML 方式：document.execCommand('italic', false, null);
+    });
+
+    // 下划线按钮
+    underlineBtn.addEventListener('click', function() {
+        toggleFormatting('<u>', '</u>'); // HTML 下划线
+        // 或者使用 Markdown 兼容方式：toggleFormatting('_', '_');
+    });
+
+    /**
+     * 切换选中文本的格式（加粗、斜体、下划线等）
+     * @param {string} prefix - 格式前缀（如 **、*、<u>）
+     * @param {string} suffix - 格式后缀（如 **、*、</u>）
+     */
+    function toggleFormatting(prefix, suffix) {
+        const selection = window.getSelection();
+
+        // 如果没有选中内容，直接返回
+        if (selection.rangeCount === 0 || selection.toString().trim() === '') {
+            return;
+        }
+
+        const range = selection.getRangeAt(0);
+        const selectedText = selection.toString();
+
+        // 检查选中文本是否已经有相同的格式（避免重复包裹）
+        const alreadyFormatted =
+            selectedText.startsWith(prefix) &&
+            selectedText.endsWith(suffix);
+
+        let newText;
+        if (alreadyFormatted) {
+            // 如果已经有格式，就移除格式
+            newText = selectedText.slice(prefix.length, -suffix.length);
+        } else {
+            // 如果没有格式，就添加格式
+            newText = prefix + selectedText + suffix;
+        }
+
+        // 替换选中内容
+        range.deleteContents();
+        range.insertNode(document.createTextNode(newText));
+
+        // 恢复光标位置
+        const newRange = document.createRange();
+        newRange.setStart(range.startContainer, range.startOffset);
+        newRange.setEnd(range.startContainer, range.startOffset + newText.length);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+
+        // 保持编辑器焦点
+        editor.focus();
+    }
+
+    clearFormatBtn.addEventListener('click', function() {
+        clearAllMarkdownFormat();
+    });
+
+    // 清除所有 Markdown 格式的函数
+    function clearAllMarkdownFormat() {
+        const selection = window.getSelection();
+
+        // 如果没有选中内容，清除整个编辑器的格式
+        if (selection.rangeCount === 0 || selection.toString().trim() === '') {
+            let editorContent = editor.innerHTML;
+
+            // 替换所有 Markdown 格式为纯文本
+            editorContent = removeMarkdownFormatting(editorContent);
+            editor.innerHTML = editorContent;
+            return;
+        }
+
+        // 如果有选中内容，只清除选中部分的格式
+        if (editor.contains(selection.anchorNode)) {
+            const range = selection.getRangeAt(0);
+            const selectedText = selection.toString();
+
+            // 移除选中文本中的 Markdown 格式
+            const plainText = removeMarkdownFormatting(selectedText);
+
+            // 替换选中内容
+            const newTextNode = document.createTextNode(plainText);
+            range.deleteContents();
+            range.insertNode(newTextNode);
+
+            // 恢复光标位置
+            const newRange = document.createRange();
+            newRange.setStartAfter(newTextNode);
+            newRange.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(newRange);
+        }
+
+        editor.focus();
+    }
+
+    // 移除所有 Markdown 格式的辅助函数
+    function removeMarkdownFormatting(text) {
+        // 移除标题（#、##、###）
+        text = text.replace(/^#{1,3}\s/gm, '');
+
+        // 移除粗体（**text** 或 __text__）
+        text = text.replace(/\*\*(.*?)\*\*|__(.*?)__/g, '$1$2');
+
+        // 移除斜体（*text* 或 _text_）
+        text = text.replace(/\*(.*?)\*|_(.*?)_/g, '$1$2');
+
+        // 移除删除线（~~text~~）
+        text = text.replace(/~~(.*?)~~/g, '$1');
+
+        // 移除内联代码（`code`）
+        text = text.replace(/`(.*?)`/g, '$1');
+
+        // 移除链接（[text](url)）
+        text = text.replace(/\[(.*?)\]\(.*?\)/g, '$1');
+
+        // 移除图片（![alt](url)）
+        text = text.replace(/!\[(.*?)\]\(.*?\)/g, '$1');
+
+        // 移除 HTML 颜色（如 <span style="color:red">text</span>）
+        text = text.replace(/<span[^>]*>(.*?)<\/span>/g, '$1');
+
+        return text;
+    }
+
+    h1Btn.addEventListener('click', function() {
+        formatSelection('# ');
+    });
+
+    h2Btn.addEventListener('click', function() {
+        formatSelection('## ');
+    });
+
+    h3Btn.addEventListener('click', function() {
+        formatSelection('### ');
+    });
+
+    function formatSelection(markdownPrefix) {
+        const selection = window.getSelection();
+
+        // 检查是否有选中内容且选中范围在编辑器内
+        if (selection.rangeCount === 0 ||
+            selection.toString().trim() === '' ||
+            !editor.contains(selection.anchorNode)) {
+            return;
+        }
+
+        const range = selection.getRangeAt(0);
+        let selectedText = selection.toString();
+
+        // 移除可能存在的旧 Markdown 标题前缀（#、##、###）
+        selectedText = selectedText.replace(/^#{1,3}\s/, '');
+
+        // 创建新的文本节点
+        const formattedText = document.createTextNode(markdownPrefix + selectedText);
+
+        // 删除并替换选中内容
+        range.deleteContents();
+        range.insertNode(formattedText);
+
+        // 将光标放在新插入的文本之后
+        const newRange = document.createRange();
+        newRange.setStartAfter(formattedText);
+        newRange.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
+
+        // 确保编辑器保持焦点
+        editor.focus();
+    }
+
+
 // 获取DOM元素
     const previewButton = document.getElementById('previewMd');
     const editorArea = document.querySelector('.editor-area[data-markdown]');
@@ -283,6 +655,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+
 });
 
 
@@ -291,17 +665,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 // 获取所有工具按钮
-const clearFormatBtn = document.getElementById('clearFormatBtn');
-const fontFamilySelect = document.getElementById('fontFamily');
-const fontSizeSelect = document.getElementById('fontSize');
+
+
 const textColorBtn = document.getElementById('textColorBtn');
 const boldBtn = document.getElementById('boldBtn');
 const italicBtn = document.getElementById('italicBtn');
 const underlineBtn = document.getElementById('underlineBtn');
-const indentBtn = document.getElementById('indentBtn');
-const alignLeftBtn = document.getElementById('alignLeftBtn');
-const alignCenterBtn = document.getElementById('alignCenterBtn');
-const alignRightBtn = document.getElementById('alignRightBtn');
 
 // 获取预览区域元素
 const previewArea = document.getElementById('previewArea');
@@ -317,86 +686,16 @@ clearFormatBtn.addEventListener('click', () => {
     updateButtonStates();
 });
 
-// 字体家族
-fontFamilySelect.addEventListener('change', () => {
-    applyFontFamily(fontFamilySelect.value);
-});
 
-// 字体大小 - 改进实现
-fontSizeSelect.addEventListener('change', () => {
-    applyFontSize(fontSizeSelect.value + 'px');
-});
+
 // 文本样式按钮
 boldBtn.addEventListener('click', () => toggleTextStyle('fontWeight', 'bold'));
 italicBtn.addEventListener('click', () => toggleTextStyle('fontStyle', 'italic'));
 underlineBtn.addEventListener('click', () => toggleTextStyle('textDecoration', 'underline'));
 
-// 对齐按钮
-alignLeftBtn.addEventListener('click', () => setTextAlignment('left'));
-alignCenterBtn.addEventListener('click', () => setTextAlignment('center'));
-alignRightBtn.addEventListener('click', () => setTextAlignment('right'));
 
-// 缩进
-indentBtn.addEventListener('click', () => {
-    applyIndent();
-});
 
 /* ========== 核心功能函数 ========== */
-
-// 应用字体大小
-function applyFontSize(size) {
-    const selection = window.getSelection();
-    if (!isValidSelection(selection)) return;
-
-    // 保存当前选区
-    saveSelection();
-
-    // 移除现有的字体大小样式
-    removeFormattingByProperty('fontSize');
-
-    // 应用新的字体大小
-    if (selection.toString().trim() !== '') {
-        document.execCommand('fontSize', false, '7'); // 创建font标签
-        const fontElements = editorArea.getElementsByTagName('font');
-        const lastFont = fontElements[fontElements.length - 1];
-        if (lastFont && lastFont.size === '7') {
-            lastFont.removeAttribute('size');
-            lastFont.style.fontSize = size;
-        }
-    } else {
-        // 没有选中文本时设置默认样式
-        editorArea.style.fontSize = size;
-    }
-
-    // 恢复选区
-    restoreSelection();
-    updateButtonStates();
-}
-function applyFontFamily(fontFamily) {
-    const selection = window.getSelection();
-
-    // 检查选区有效性
-    if (!isValidSelection(selection)) return;
-
-    // 清理字体名称中的非法字符
-    const validFontFamily = fontFamily.replace(/[^a-zA-Z0-9\s]/g, '');
-    console.log(validFontFamily)
-    // 保存选区
-    saveSelection();
-    // 应用字体命令
-    if (typeof document.execCommand === 'function') {
-        document.execCommand('fontName', false, validFontFamily);
-
-    } else {
-        console.warn('document.execCommand is not supported in this browser.');
-    }
-
-    // 恢复选区
-    restoreSelection();
-
-    // 更新按钮状态
-    updateButtonStates();
-}
 
 // 应用文本颜色
 function applyTextColor(color) {
@@ -408,60 +707,8 @@ function applyTextColor(color) {
     restoreSelection();
     updateButtonStates();
 }
-    const textColorPicker = document.getElementById('textColorPicker');
 
-    // 监听颜色选择器的变化
-    if (textColorPicker) {
-        textColorPicker.addEventListener('input', function() {
-            const selectedColor = textColorPicker.value;
-            applyTextColor(selectedColor);
-        });
-    }
-// 切换文本样式
-function toggleTextStyle(property, value) {
-    const selection = window.getSelection();
-    if (!isValidSelection(selection)) return;
 
-    saveSelection();
-
-    // 检查是否已应用该样式
-    const isApplied = document.queryCommandState(property === 'fontWeight' ? 'bold' :
-        property === 'fontStyle' ? 'italic' : 'underline');
-
-    if (isApplied) {
-        document.execCommand(property === 'fontWeight' ? 'bold' :
-            property === 'fontStyle' ? 'italic' : 'underline', false, null);
-    } else {
-        const span = document.createElement('span');
-        span.style[property] = value;
-        surroundSelection(span);
-    }
-
-    restoreSelection();
-    updateButtonStates();
-}
-
-// 设置文本对齐
-function setTextAlignment(align) {
-    const selection = window.getSelection();
-    if (!isValidSelection(selection)) return;
-
-    saveSelection();
-    document.execCommand('justify' + align.charAt(0).toUpperCase() + align.slice(1), false, null);
-    restoreSelection();
-    updateAlignmentButtons(align);
-}
-
-// 应用缩进
-function applyIndent() {
-    const selection = window.getSelection();
-    if (!isValidSelection(selection)) return;
-
-    saveSelection();
-    document.execCommand('indent', false, null);
-    restoreSelection();
-    updateButtonStates();
-}
 
 /* ========== 选区管理函数 ========== */
 
@@ -491,53 +738,6 @@ function isValidSelection(selection) {
         editorArea.contains(selection.anchorNode);
 }
 
-/* ========== 格式处理函数 ========== */
-
-// 移除所有格式
-function removeAllFormatting(element) {
-    document.execCommand('removeFormat', false, null);
-    element.querySelectorAll('font, span, div').forEach(el => {
-        if (el.hasAttribute('style') && !el.getAttribute('style').trim()) {
-            el.removeAttribute('style');
-        }
-        if (!el.hasAttributes() && el.tagName.toLowerCase() === 'span') {
-            const parent = el.parentNode;
-            while (el.firstChild) {
-                parent.insertBefore(el.firstChild, el);
-            }
-            parent.removeChild(el);
-        }
-    });
-}
-
-// 移除特定属性格式
-function removeFormattingByProperty(property) {
-    const elements = editorArea.querySelectorAll('[style*="' + property + '"]');
-    elements.forEach(el => {
-        el.style[property] = '';
-        if (!el.getAttribute('style')) {
-            el.removeAttribute('style');
-        }
-    });
-}
-
-// 环绕选区
-function surroundSelection(element) {
-    const selection = window.getSelection();
-    if (selection.rangeCount === 0) return;
-
-    try {
-        const range = selection.getRangeAt(0);
-        range.surroundContents(element);
-    } catch (e) {
-        // 处理跨元素选区的情况
-        const range = selection.getRangeAt(0);
-        const content = range.extractContents();
-        element.appendChild(content);
-        range.insertNode(element);
-    }
-}
-
 /* ========== 状态管理函数 ========== */
 
 // 更新按钮状态
@@ -549,72 +749,4 @@ function updateButtonStates() {
     boldBtn.classList.toggle('active', document.queryCommandState('bold'));
     italicBtn.classList.toggle('active', document.queryCommandState('italic'));
     underlineBtn.classList.toggle('active', document.queryCommandState('underline'));
-
-    // 更新字体大小选择器
-    updateFontSizeSelector();
 }
-
-// 更新字体大小选择器
-function updateFontSizeSelector() {
-    const selection = window.getSelection();
-    if (selection.rangeCount === 0) return;
-    const range = selection.getRangeAt(0);
-    let element = range.commonAncestorContainer;
-
-    if (element.nodeType === Node.TEXT_NODE) {
-        element = element.parentElement;
-    }
-
-    const fontSize = window.getComputedStyle(element).fontSize;
-    if (fontSize) {
-        const sizeValue = parseInt(fontSize);
-        Array.from(fontSizeSelect.options).forEach(option => {
-            if (parseInt(option.value) === sizeValue) {
-                option.selected = true; // 设置为目标选项
-            } else {
-                option.selected = false; // 清除其他选项的 selected 状态
-            }
-
-        })
-    }
-
-
-}
-
-// 更新对齐按钮状态
-function updateAlignmentButtons(alignment) {
-    alignLeftBtn.classList.toggle('active', alignment === 'left');
-    alignCenterBtn.classList.toggle('active', alignment === 'center');
-    alignRightBtn.classList.toggle('active', alignment === 'right');
-}
-
-/* ========== 事件监听 ========== */
-
-// 监听选区变化
-document.addEventListener('selectionchange', updateButtonStates);
-
-// 编辑器点击时更新状态
-editorArea.addEventListener('click', updateButtonStates);
-
-// 字体家族 - 改进实现
-fontFamilySelect.addEventListener('change', function() {
-    const font = this.value;
-
-    // 保存当前选区
-    const selection = window.getSelection();
-    const range = selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
-
-    // 如果选择了文本
-    if (range && !range.collapsed) {
-
-        // 应用新字体
-        document.execCommand('fontName', false, font);
-    } else {
-        // 没有选择文本时，设置整个编辑器的默认字体
-        editorArea.style.fontFamily = font;
-    }
-
-    // 更新按钮状态
-    updateButtonStates();
-});
-
