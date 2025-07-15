@@ -16,6 +16,47 @@ document.addEventListener('DOMContentLoaded', function() {
     const aiConversation = document.querySelector('.ai-conversation');
     const help = document.getElementById('help');
 
+
+// 获取DOM元素
+    const previewButton = document.getElementById('previewMd');
+    const editorArea = document.querySelector('.editor-area[data-markdown]');
+
+// 添加点击事件监听器
+    previewButton.addEventListener('click', function() {
+        const isPreview = editorArea.classList.contains('preview-mode');
+
+        if (isPreview) {
+            // 如果是预览状态，切换回原始Markdown
+            editorArea.innerHTML = editorArea.getAttribute('data-original-content');
+            editorArea.classList.remove('preview-mode');
+            editorArea.setAttribute('contenteditable', 'true');
+            previewButton.textContent = '预览md';
+        } else {
+            // 如果是原始状态，渲染为HTML
+            editorArea.setAttribute('data-original-content', editorArea.innerHTML);
+
+            // 获取HTML内容，并替换 <div> 和 <br> 为 \n
+            let htmlContent = editorArea.innerHTML;
+
+            // 替换 <div><br></div> 或 <div></div> 为 \n
+            htmlContent = htmlContent.replace(/<div><br><\/div>/gi, '\n');
+            htmlContent = htmlContent.replace(/<div>/gi, '\n');
+            htmlContent = htmlContent.replace(/<\/div>/gi, '');
+
+            // 替换 <br> 为 \n
+            htmlContent = htmlContent.replace(/<br>/gi, '\n');
+            htmlContent = htmlContent.replace(/<br\s*\/?>/gi, '\n');
+
+            // 使用marked.js渲染
+            const renderedHTML = marked.parse(htmlContent);
+            editorArea.innerHTML = renderedHTML;
+            editorArea.classList.add('preview-mode');
+            editorArea.setAttribute('contenteditable', 'false');
+            previewButton.textContent = '编辑md';
+        }
+    });
+
+
     if(help){
         help.addEventListener('click', function() {
             window.location.href = 'https://github.com/Ereshkigal-h/mars_note';
@@ -245,8 +286,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// 获取编辑器元素和所有工具按钮
-const editorArea = document.querySelector('.editor-area');
+
+
+
+
+// 获取所有工具按钮
 const clearFormatBtn = document.getElementById('clearFormatBtn');
 const fontFamilySelect = document.getElementById('fontFamily');
 const fontSizeSelect = document.getElementById('fontSize');
@@ -258,6 +302,9 @@ const indentBtn = document.getElementById('indentBtn');
 const alignLeftBtn = document.getElementById('alignLeftBtn');
 const alignCenterBtn = document.getElementById('alignCenterBtn');
 const alignRightBtn = document.getElementById('alignRightBtn');
+
+// 获取预览区域元素
+const previewArea = document.getElementById('previewArea');
 
 // 设置编辑器区域为可编辑
 editorArea.contentEditable = true;
@@ -549,13 +596,6 @@ document.addEventListener('selectionchange', updateButtonStates);
 // 编辑器点击时更新状态
 editorArea.addEventListener('click', updateButtonStates);
 
-// 初始化编辑器
-editorArea.addEventListener('focus', () => {
-    if (editorArea.innerHTML === '') {
-        editorArea.innerHTML = '<p><br></p>'; // 确保有可编辑的内容
-    }
-});
-
 // 字体家族 - 改进实现
 fontFamilySelect.addEventListener('change', function() {
     const font = this.value;
@@ -577,3 +617,4 @@ fontFamilySelect.addEventListener('change', function() {
     // 更新按钮状态
     updateButtonStates();
 });
+

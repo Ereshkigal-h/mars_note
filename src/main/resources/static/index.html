@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>主界面</title>
     <link rel="stylesheet" href="styles.css">
-
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
 
 </head>
 <body>
@@ -16,9 +14,12 @@
             <div class="menu-item" id="saveButton">保存</div>
             <div class="menu-item" id="help">帮助</div>
             <span id="welcomeMessage"></span>
+            <div class="menu-item" id="previewMd">预览md</div>
             <div class="ai" id="ai-button">AI助手</div>
             <div class="login" id="loginButton">登录</div>
         </div>
+
+
 
         <div class="tab-bar">
             <div class="tab">纲<br>大</div>
@@ -86,9 +87,7 @@
                         <button id="alignRightBtn" title="居右对齐"><i class="fas fa-align-right"></i> 居右</button>
                     </div>
                 </div>
-                <div class="editor-area" contenteditable="true">
-                    <p>在这里输入你的内容...</p>
-                </div>
+                <div class="editor-area" contenteditable="true" data-markdown></div>
             </div>
         </div>
 
@@ -115,7 +114,6 @@
 
         </div>
 
-    </div>
 
     <script src="script.js"></script>
     <script src="login.js"></script>
